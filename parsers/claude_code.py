@@ -11,7 +11,10 @@ def parse(path: Path) -> list[dict]:
     conversations = []
     for meta_file in (p / "session-meta").glob("*.json"):
         session_id = meta_file.stem
-        meta = json.loads(meta_file.read_text())
+        try:
+            meta = json.loads(meta_file.read_text())
+        except json.JSONDecodeError:
+            continue
         jsonl_file = p / f"{session_id}.jsonl"
         if not jsonl_file.exists():
             continue
