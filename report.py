@@ -1,4 +1,5 @@
-from datetime import date as date_type
+from datetime import date as _date_cls
+from pathlib import Path
 from collections import Counter
 from llm import generate
 
@@ -23,23 +24,23 @@ Rédige un rapport structuré en markdown avec exactement ces sections :
 Sois concis, factuel, et base-toi uniquement sur les données fournies."""
 
 def compute_stats(facets: list[dict]) -> dict:
-    outcomes = Counter(f["outcome"] for f in facets)
-    sources = Counter(f["source"] for f in facets)
+    outcomes = Counter(f.get("outcome", "unknown") for f in facets)
+    sources = Counter(f.get("source", "unknown") for f in facets)
     return {
         "total": len(facets),
-        "outcomes": dict(outcomes),
-        "sources": dict(sources),
+        "outcomes": dict(sorted(outcomes.items())),
+        "sources": dict(sorted(sources.items())),
     }
 
-def generate_report(facets: list[dict], date: str = None) -> str:
+def generate_report(facets: list[dict], date: str | None = None) -> str:
     if date is None:
-        date = str(date_type.today())
+        date = str(_date_cls.today())
     stats = compute_stats(facets)
     summaries = "\n".join(f"- {f['brief_summary']}" for f in facets)
-    frictions = "\n".join(f"- {f['friction']}" for f in facets if f.get("friction"))
+    frictions = "\n".join(f"- {f.get('friction', '')}" for f in facets if f.get("friction"))
     narrative = generate(NARRATIVE_PROMPT.format(
         total=stats["total"],
-        summaries=summaries,
+        summaries=summaries or "Aucun résumé disponible.",
         frictions=frictions or "Aucune friction majeure identifiée.",
     ))
     sources_str = ", ".join(f"{k}: {v}" for k, v in stats["sources"].items())
@@ -61,8 +62,7 @@ Résultats : {outcomes_str}
 {narrative}
 """
 
-def save_report(content: str, date: str, reports_dir) -> str:
-    from pathlib import Path
+def save_report(content: str, date: str, reports_dir: str | Path) -> str:
     path = Path(reports_dir) / f"insights-{date}.md"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content)
