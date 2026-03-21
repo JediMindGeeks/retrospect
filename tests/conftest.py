@@ -1,17 +1,11 @@
 import pytest
 from pathlib import Path
-import json, shutil, tempfile
+import json
 
 @pytest.fixture
-def tmp_dir():
-    d = Path(tempfile.mkdtemp())
-    yield d
-    shutil.rmtree(d)
-
-@pytest.fixture
-def sample_claude_dir(tmp_dir):
+def sample_claude_dir(tmp_path):
     """Crée un répertoire Claude Code factice avec session-meta/ et .jsonl"""
-    (tmp_dir / "session-meta").mkdir()
+    (tmp_path / "session-meta").mkdir()
     meta = {
         "session_id": "abc123",
         "project_path": "/home/user/project",
@@ -20,7 +14,7 @@ def sample_claude_dir(tmp_dir):
         "input_tokens": 5000,
         "output_tokens": 1200
     }
-    (tmp_dir / "session-meta" / "abc123.json").write_text(json.dumps(meta))
+    (tmp_path / "session-meta" / "abc123.json").write_text(json.dumps(meta))
     messages = [
         {"type": "user", "uuid": "u1", "parentUuid": None, "sessionId": "abc123",
          "timestamp": "2026-03-01T10:00:01Z", "isMeta": False,
@@ -32,13 +26,13 @@ def sample_claude_dir(tmp_dir):
          "timestamp": "2026-03-01T10:01:00Z", "isMeta": False,
          "message": {"role": "user", "content": "Merci, ça marche !"}},
     ]
-    with (tmp_dir / "abc123.jsonl").open("w") as f:
+    with (tmp_path / "abc123.jsonl").open("w") as f:
         for m in messages:
             f.write(json.dumps(m) + "\n")
-    return tmp_dir
+    return tmp_path
 
 @pytest.fixture
-def sample_chatgpt_file(tmp_dir):
+def sample_chatgpt_file(tmp_path):
     """Crée un fichier conversations.json ChatGPT factice"""
     data = [{
         "id": "conv-xyz",
@@ -71,6 +65,6 @@ def sample_chatgpt_file(tmp_dir):
             }
         }
     }]
-    f = tmp_dir / "conversations.json"
+    f = tmp_path / "conversations.json"
     f.write_text(json.dumps(data))
     return f

@@ -10,10 +10,9 @@ def test_default_model_is_set():
     assert Config.OLLAMA_MODEL != ""
 
 def test_default_model():
-    assert "llama" in Config.OLLAMA_MODEL or Config.OLLAMA_MODEL != ""
+    assert Config.OLLAMA_MODEL == "mistral-small3.1:24b"
 
-def test_output_dir_exists_after_init():
-    from pathlib import Path
-    Config.ensure_dirs()
-    assert Path(Config.FACETS_DIR).exists()
-    assert Path(Config.REPORTS_DIR).exists()
+def test_output_dir_exists_after_init(tmp_path):
+    Config.ensure_dirs(base_dir=tmp_path)
+    assert (tmp_path / "facets").exists()
+    assert (tmp_path / "reports").exists()

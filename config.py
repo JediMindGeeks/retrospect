@@ -14,6 +14,7 @@ class Config:
     MIN_MESSAGES: int = 3
 
     @classmethod
-    def ensure_dirs(cls):
-        cls.FACETS_DIR.mkdir(parents=True, exist_ok=True)
-        cls.REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    def ensure_dirs(cls, base_dir: Path = None):
+        base = Path(base_dir) if base_dir else cls._base
+        (base / "facets").mkdir(parents=True, exist_ok=True)
+        (base / "reports").mkdir(parents=True, exist_ok=True)
