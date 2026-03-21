@@ -42,14 +42,21 @@ def run(path: Path, facets_dir: Path = None, reports_dir: Path = None) -> str:
     print(f"[insights] {len(conversations)} conversations trouvées ({source})")
     facets = []
     for i, conv in enumerate(conversations, 1):
-        conv_id = conv.get("session_id") or conv.get("conversation_id")
+        conv_id = conv.get("session_id") or conv.get("conversation_id") or conv.get("id", "unknown")
+        if not conv_id:
+            print(f"  [{i}/{len(conversations)}] (no id — skipped)")
+            continue
         cached = load_cached(source, conv_id, base_dir=facets_dir)
         if cached:
             print(f"  [{i}/{len(conversations)}] {conv_id[:8]}… (cache)")
             facets.append(cached)
             continue
         print(f"  [{i}/{len(conversations)}] {conv_id[:8]}… (LLM)")
-        facet = generate_facet(conv, source=source)
+        try:
+            facet = generate_facet(conv, source=source)
+        except ValueError as exc:
+            print(f"  [{i}/{len(conversations)}] {conv_id[:8]}… WARNING: skipped ({exc})")
+            continue
         save_facet(facet, base_dir=facets_dir)
         facets.append(facet)
     today = str(date.today())
