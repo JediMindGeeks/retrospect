@@ -45,3 +45,36 @@ class TestClaudeCodeParser:
                 f.write(json.dumps(m) + "\n")
         convs = parse_claude(tmp_path)
         assert len(convs) == 0
+
+class TestChatGPTDetection:
+    def test_detects_valid_chatgpt_file(self, sample_chatgpt_file):
+        assert detect_chatgpt(sample_chatgpt_file) is True
+
+    def test_rejects_claude_dir(self, sample_claude_dir):
+        assert detect_chatgpt(sample_claude_dir) is False
+
+    def test_rejects_non_chatgpt_json(self, tmp_path):
+        f = tmp_path / "other.json"
+        f.write_text('{"key": "value"}')
+        assert detect_chatgpt(f) is False
+
+class TestChatGPTParser:
+    def test_returns_list_of_conversations(self, sample_chatgpt_file):
+        convs = parse_chatgpt(sample_chatgpt_file)
+        assert len(convs) == 1
+
+    def test_conversation_has_required_fields(self, sample_chatgpt_file):
+        conv = parse_chatgpt(sample_chatgpt_file)[0]
+        assert "conversation_id" in conv
+        assert "messages" in conv
+        assert "title" in conv
+
+    def test_messages_exclude_system_role(self, sample_chatgpt_file):
+        conv = parse_chatgpt(sample_chatgpt_file)[0]
+        roles = [m["role"] for m in conv["messages"]]
+        assert "system" not in roles
+
+    def test_messages_sorted_by_create_time(self, sample_chatgpt_file):
+        conv = parse_chatgpt(sample_chatgpt_file)[0]
+        times = [m["timestamp"] for m in conv["messages"]]
+        assert times == sorted(times)
