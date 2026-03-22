@@ -1,4 +1,6 @@
-# insights
+# retrospect
+
+[![🇫🇷 Français](https://img.shields.io/badge/lang-Français-blue?logo=googletranslate&logoColor=white)](README.fr.md)
 
 A portable Python CLI that reproduces the Claude Code `/insights` pipeline — analyzes conversation logs, generates structured "facets" per conversation via LLM, and aggregates them into a markdown narrative report.
 

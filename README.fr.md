@@ -1,5 +1,7 @@
 # retrospect
 
+[![🇬🇧 English](https://img.shields.io/badge/lang-English-blue?logo=googletranslate&logoColor=white)](README.md)
+
 Un CLI Python portable qui reproduit le pipeline d'analyse de Claude Code — analyse les logs de conversations, génère des "facets" structurées par session via LLM, et agrège le tout en un rapport narratif markdown.
 
 Compatible avec les sessions **Claude Code** et les exports **ChatGPT**.
