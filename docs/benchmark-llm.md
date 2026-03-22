@@ -151,3 +151,26 @@ Justification :
 INSIGHTS_MODEL=qwen2.5-coder-16k:latest
 # ou dans config.py : OLLAMA_MODEL = "qwen2.5-coder-16k:latest"
 ```
+
+## Résultats post-déploiement — schéma enrichi + qwen2.5-coder
+
+Run complet sur 56 sessions (2026-03-22) après enrichissement du schéma :
+
+**Distribution outcomes :**
+- not_achieved : 26 (46%)
+- unclear_from_transcript : 20 (36%)
+- achieved : 8 (14%)
+- mostly_achieved : 2 (4%)
+
+**Comparaison Anthropic :** 18/49 (37%) accord sur outcome — vs 9/47 (19%) avec l'ancienne baseline.
+
+**Observations :**
+- `119d6ac9` correctement identifié `unclear_from_transcript` (était notre cas discriminant non résolu)
+- Anthropic utilise `fully_achieved` / `partially_achieved` — synonymes de nos `achieved` / `mostly_achieved`. Le vrai accord normalisé serait supérieur à 37%.
+- Le champ `friction` reste souvent vide même quand une friction est présente — axe d'amélioration du prompt.
+- Quelques nouveaux faux négatifs (trop pessimiste sur sessions réussies).
+
+**Axes restants :**
+1. Normaliser l'enum Anthropic dans `compare.py` pour mesurer le vrai accord
+2. Améliorer la détection de friction dans le prompt
+3. Corriger le bug du rapport narratif (JSON brut au lieu de markdown)
