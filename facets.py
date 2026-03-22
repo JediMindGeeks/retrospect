@@ -4,25 +4,43 @@ from config import Config
 from llm import generate
 
 REQUIRED_FIELDS = {"underlying_goal", "outcome", "brief_summary"}
+VALID_OUTCOMES = {"achieved", "mostly_achieved", "not_achieved", "unclear_from_transcript"}
 
-FACET_PROMPT = """Analyse cette conversation et retourne un objet JSON avec exactement ces champs :
-- underlying_goal (string): l'objectif réel de l'utilisateur
-- outcome (string): "achieved", "mostly_achieved", ou "not_achieved"
-- key_points (array): 2-5 points clés de la conversation
-- friction (string): principale difficulté rencontrée, ou "" si aucune
-- brief_summary (string): résumé en 1-2 phrases
+FACET_PROMPT = """Tu es un analyste de conversations. Analyse la conversation ci-dessous et retourne UNIQUEMENT un objet JSON valide, sans markdown, sans texte avant ou après.
 
-Conversation :
+Le JSON doit contenir EXACTEMENT ces 5 champs (noms exacts, respecte la casse) :
+- "underlying_goal" (string) : l'objectif réel de l'utilisateur en une phrase
+- "outcome" (string) : OBLIGATOIREMENT l'une de ces valeurs exactes : "achieved", "mostly_achieved", "not_achieved", "unclear_from_transcript"
+- "key_points" (array de strings) : 2 à 5 points clés de la conversation
+- "friction" (string) : principale difficulté rencontrée, ou "" si aucune
+- "brief_summary" (string) : résumé factuel en 1-2 phrases
+
+Utilise "unclear_from_transcript" si la session est trop courte ou sans interaction visible.
+
+<conversation>
 {messages}
+</conversation>
 
-Réponds UNIQUEMENT avec le JSON, sans texte autour."""
+Réponds avec le JSON uniquement. Exemple de format attendu :
+{{"underlying_goal": "...", "outcome": "achieved", "key_points": ["..."], "friction": "", "brief_summary": "..."}}"""
 
 def is_valid_facet(facet: dict) -> bool:
-    """Return True if facet contains all required fields, False otherwise."""
-    return REQUIRED_FIELDS.issubset(facet.keys())
+    """Return True if facet contains all required fields with valid values."""
+    if not REQUIRED_FIELDS.issubset(facet.keys()):
+        return False
+    return facet.get("outcome") in VALID_OUTCOMES
 
 def _cache_path(source: str, conv_id: str, base_dir: Path) -> Path:
     return Path(base_dir) / f"{source}-{conv_id}.json"
+
+def _truncate(text: str, max_chars: int) -> str:
+    """Garde début + fin pour les longues conversations (évite de couper sur le début seul)."""
+    if len(text) <= max_chars:
+        return text
+    head = max_chars // 2
+    tail = max_chars - head
+    return text[:head] + "\n\n[... contenu tronqué ...]\n\n" + text[-tail:]
+
 
 def _extract_text(m: dict) -> str:
     """Extract message text from a conversation message dict.
@@ -82,7 +100,7 @@ def generate_facet(conv: dict, source: str) -> dict:
     conv_id = conv.get("session_id") or conv.get("conversation_id")
     lines = [_extract_text(m) for m in conv["messages"]]
     messages_text = "\n".join(line for line in lines if line)
-    prompt = FACET_PROMPT.format(messages=messages_text[:8000])
+    prompt = FACET_PROMPT.format(messages=_truncate(messages_text, Config.MAX_CONV_CHARS))
 
     try:
         raw = generate(prompt)
@@ -104,9 +122,9 @@ def generate_facet(conv: dict, source: str) -> dict:
 
     if not is_valid_facet(data):
         missing = REQUIRED_FIELDS - data.keys()
-        raise ValueError(
-            f"LLM response is missing required fields: {missing}\nRaw response: {raw!r}"
-        )
+        bad_outcome = data.get("outcome") if data.get("outcome") not in VALID_OUTCOMES else None
+        detail = f"champs manquants: {missing}" if missing else f"outcome invalide: {data.get('outcome')!r} (valeurs acceptées: {VALID_OUTCOMES})"
+        raise ValueError(f"Facet invalide — {detail}\nRaw response: {raw!r}")
 
     data["conversation_id"] = conv_id
     data["source"] = source

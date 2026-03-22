@@ -89,7 +89,7 @@ class TestFacetGeneration:
             # 'outcome' is missing
         })
         with patch("facets.generate", return_value=incomplete):
-            with pytest.raises(ValueError, match="missing required fields"):
+            with pytest.raises(ValueError, match="Facet invalide"):
                 generate_facet(conv, source="claude_code")
 
     def test_chatgpt_message_format(self):

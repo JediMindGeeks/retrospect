@@ -22,7 +22,7 @@ def _call_ollama(prompt: str) -> str:
         r = httpx.post(
             f"{Config.OLLAMA_URL}/api/generate",
             json={"model": model, "prompt": prompt, "stream": False},
-            timeout=120,
+            timeout=int(os.getenv("INSIGHTS_TIMEOUT", "300")),
         )
         r.raise_for_status()
         return r.json()["response"]

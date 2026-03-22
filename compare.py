@@ -134,18 +134,19 @@ def compare(limit: int = None, detail: bool = False):
             o = ours[sid]
             print(f"\n── {sid[:16]}… ──")
             print(f"  underlying_goal")
-            print(f"    ANTHROPIC : {a.get('underlying_goal', '')[:100]}")
-            print(f"    NOUS      : {o.get('underlying_goal', '')[:100]}")
+            def s(v, n=100): return str(v or "")[:n]
+            print(f"    ANTHROPIC : {s(a.get('underlying_goal'), 100)}")
+            print(f"    NOUS      : {s(o.get('underlying_goal'), 100)}")
             print(f"  outcome     : {a.get('outcome')} → {o.get('outcome')}")
             print(f"  brief_summary")
-            print(f"    ANTHROPIC : {a.get('brief_summary', '')[:120]}")
-            print(f"    NOUS      : {o.get('brief_summary', '')[:120]}")
+            print(f"    ANTHROPIC : {s(a.get('brief_summary'), 120)}")
+            print(f"    NOUS      : {s(o.get('brief_summary'), 120)}")
             a_friction = a.get("friction_detail") or a.get("friction", "")
             o_friction = o.get("friction", "")
             if a_friction or o_friction:
                 print(f"  friction")
-                print(f"    ANTHROPIC : {a_friction[:100]}")
-                print(f"    NOUS      : {o_friction[:100]}")
+                print(f"    ANTHROPIC : {s(a_friction, 100)}")
+                print(f"    NOUS      : {s(o_friction, 100)}")
     else:
         print(f"\n(Relance avec --detail pour la comparaison session par session)")
 

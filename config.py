@@ -12,6 +12,7 @@ class Config:
     REPORTS_DIR: Path = _base / "reports"
 
     MIN_MESSAGES: int = 3
+    MAX_CONV_CHARS: int = int(os.getenv("INSIGHTS_MAX_CHARS", "32000"))
 
     @classmethod
     def ensure_dirs(cls, base_dir: Path = None):
