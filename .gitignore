@@ -1,4 +1,7 @@
 __pycache__/
 *.pyc
+*.pyo
 .venv/
 .pytest_cache/
+*.wav
+*.mp3
