@@ -14,6 +14,8 @@ class Config:
 
     MIN_MESSAGES: int = 3
     MAX_CONV_CHARS: int = int(os.getenv("INSIGHTS_MAX_CHARS", "32000"))
+    CHUNK_THRESHOLD: int = int(os.getenv("INSIGHTS_CHUNK_THRESHOLD", "30000"))
+    CHUNK_SIZE: int = int(os.getenv("INSIGHTS_CHUNK_SIZE", "25000"))
 
     @classmethod
     def ensure_dirs(cls, base_dir: Path = None):

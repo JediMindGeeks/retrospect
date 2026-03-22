@@ -91,6 +91,17 @@ def is_valid_facet(facet: dict) -> bool:
 def _cache_path(source: str, conv_id: str, base_dir: Path) -> Path:
     return Path(base_dir) / f"{source}-{conv_id}.json"
 
+_CHUNK_SUMMARY_PROMPT = """Résume ce fragment de conversation en 3 à 5 phrases concises. Couvre :
+- L'objectif de l'utilisateur dans ce fragment
+- Les actions concrètes de Claude (ce qu'il a fait ou tenté)
+- Les frictions ou blocages rencontrés (s'il y en a)
+- Le résultat partiel à la fin de ce fragment
+
+Fragment :
+{chunk}
+
+Résumé (3-5 phrases, factuel) :"""
+
 def _truncate(text: str, max_chars: int) -> str:
     """Garde début + fin pour les longues conversations (évite de couper sur le début seul)."""
     if len(text) <= max_chars:
@@ -98,6 +109,31 @@ def _truncate(text: str, max_chars: int) -> str:
     head = max_chars // 2
     tail = max_chars - head
     return text[:head] + "\n\n[... contenu tronqué ...]\n\n" + text[-tail:]
+
+def _summarize_chunk(chunk: str) -> str:
+    """Résume un fragment de conversation via LLM (modèle facets)."""
+    return generate(_CHUNK_SUMMARY_PROMPT.format(chunk=chunk))
+
+def _chunk_and_summarize(text: str, chunk_size: int = None) -> str:
+    """Découpe le texte en chunks et résume chaque chunk via LLM.
+
+    Retourne la concaténation des résumés, séparés par un marqueur de transition.
+    Utilisé pour les transcripts trop longs pour tenir en un seul appel.
+    """
+    chunk_size = chunk_size or Config.CHUNK_SIZE
+    chunks = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+    summaries = [_summarize_chunk(chunk) for chunk in chunks]
+    return "\n\n[--- suite de la conversation ---]\n\n".join(summaries)
+
+def _prepare_transcript(text: str) -> str:
+    """Prépare le transcript pour l'extraction de facets.
+
+    Si le texte dépasse CHUNK_THRESHOLD : découpe en chunks et résume chacun via LLM
+    (pipeline Anthropic Stage 2). Sinon, troncature simple tête+queue.
+    """
+    if len(text) > Config.CHUNK_THRESHOLD:
+        return _chunk_and_summarize(text)
+    return _truncate(text, Config.MAX_CONV_CHARS)
 
 
 def _extract_text(m: dict) -> str:
@@ -158,7 +194,7 @@ def generate_facet(conv: dict, source: str) -> dict:
     conv_id = conv.get("session_id") or conv.get("conversation_id")
     lines = [_extract_text(m) for m in conv["messages"]]
     messages_text = "\n".join(line for line in lines if line)
-    prompt = FACET_PROMPT.format(messages=_truncate(messages_text, Config.MAX_CONV_CHARS))
+    prompt = FACET_PROMPT.format(messages=_prepare_transcript(messages_text))
 
     try:
         raw = generate(prompt, schema=_FACET_SCHEMA)

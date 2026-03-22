@@ -1,7 +1,10 @@
 import json, pytest
-from unittest.mock import patch
+from unittest.mock import patch, call
 from pathlib import Path
-from facets import generate_facet, load_cached, save_facet, is_valid_facet, REQUIRED_FIELDS
+from facets import (
+    generate_facet, load_cached, save_facet, is_valid_facet, REQUIRED_FIELDS,
+    _truncate, _chunk_and_summarize, _prepare_transcript,
+)
 
 class TestFacetValidation:
     def test_valid_facet_passes(self):
@@ -113,6 +116,80 @@ class TestFacetGeneration:
         assert facet["conversation_id"] == "chatgpt-001"
         assert facet["source"] == "chatgpt"
         assert facet["outcome"] == "achieved"
+
+class TestChunking:
+    def test_truncate_short_text_unchanged(self):
+        text = "a" * 100
+        assert _truncate(text, 200) == text
+
+    def test_truncate_long_text_has_marker(self):
+        text = "a" * 10000
+        result = _truncate(text, 1000)
+        assert "[... contenu tronqué ...]" in result
+        assert len(result) < len(text)
+
+    def test_chunk_and_summarize_one_chunk(self):
+        """Texte < chunk_size → 1 seul appel LLM."""
+        text = "x" * 100
+        with patch("facets.generate", return_value="résumé court") as mock:
+            result = _chunk_and_summarize(text, chunk_size=500)
+        assert mock.call_count == 1
+        assert "résumé court" in result
+
+    def test_chunk_and_summarize_multiple_chunks(self):
+        """Texte > chunk_size → N appels LLM, résumés joints."""
+        text = "mot " * 10000  # ~40 000 chars
+        with patch("facets.generate", return_value="résumé") as mock:
+            result = _chunk_and_summarize(text, chunk_size=25000)
+        assert mock.call_count == 2
+        assert "résumé" in result
+        assert "[--- suite de la conversation ---]" in result
+
+    def test_chunk_and_summarize_three_chunks(self):
+        """Texte exactement 3× chunk_size → 3 appels."""
+        text = "a" * 75000  # 3 × 25000 = exactement 3 chunks
+        with patch("facets.generate", return_value="s") as mock:
+            _chunk_and_summarize(text, chunk_size=25000)
+        assert mock.call_count == 3
+
+    def test_prepare_transcript_short_no_llm(self):
+        """Texte court → troncature simple, pas de LLM."""
+        text = "x" * 1000
+        with patch("facets.generate") as mock:
+            result = _prepare_transcript(text)
+        mock.assert_not_called()
+        assert result == text
+
+    def test_prepare_transcript_long_uses_chunking(self):
+        """Texte > CHUNK_THRESHOLD → appel LLM de résumé."""
+        text = "x" * 35000  # dépasse 30000
+        with patch("facets.generate", return_value="résumé chunk") as mock:
+            result = _prepare_transcript(text)
+        assert mock.call_count >= 1
+        assert "résumé chunk" in result
+
+    def test_generate_facet_long_transcript_uses_chunking(self, sample_claude_dir):
+        """generate_facet sur transcript long → _prepare_transcript appelé, résultat injecté dans prompt."""
+        from parsers.claude_code import parse
+        conv = parse(sample_claude_dir)[0]
+        long_content = "message très long " * 2000
+        conv["messages"] = [
+            {"message": {"role": "user", "content": long_content}},
+            {"message": {"role": "assistant", "content": long_content}},
+        ]
+        facet_response = json.dumps({
+            "underlying_goal": "test long",
+            "outcome": "achieved",
+            "key_points": ["chunking"],
+            "friction": "",
+            "brief_summary": "Session longue résumée par chunks",
+        })
+        # On patche _prepare_transcript pour isoler le test du chunking LLM
+        with patch("facets._prepare_transcript", return_value="résumé synthétisé") as mock_prep, \
+             patch("facets.generate", return_value=facet_response):
+            facet = generate_facet(conv, source="claude_code")
+        mock_prep.assert_called_once()
+        assert facet["underlying_goal"] == "test long"
 
     def test_unknown_message_format_skipped(self):
         """Messages with neither nested nor flat format are silently skipped."""
