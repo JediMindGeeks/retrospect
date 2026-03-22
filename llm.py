@@ -2,6 +2,19 @@ import os
 import httpx
 from config import Config
 
+# JSON schema pour forcer la structure du facet au niveau des tokens (Ollama structured output)
+_FACET_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "underlying_goal": {"type": "string"},
+        "outcome": {"type": "string", "enum": ["achieved", "mostly_achieved", "not_achieved", "unclear_from_transcript"]},
+        "key_points": {"type": "array", "items": {"type": "string"}},
+        "friction": {"type": "string"},
+        "brief_summary": {"type": "string"},
+    },
+    "required": ["underlying_goal", "outcome", "key_points", "friction", "brief_summary"],
+}
+
 class LLMUnavailableError(Exception):
     pass
 
@@ -21,7 +34,7 @@ def _call_ollama(prompt: str) -> str:
     try:
         r = httpx.post(
             f"{Config.OLLAMA_URL}/api/generate",
-            json={"model": model, "prompt": prompt, "stream": False, "format": "json"},
+            json={"model": model, "prompt": prompt, "stream": False, "format": _FACET_SCHEMA},
             timeout=int(os.getenv("INSIGHTS_TIMEOUT", "300")),
         )
         r.raise_for_status()
