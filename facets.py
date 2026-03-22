@@ -10,12 +10,12 @@ FACET_PROMPT = """Tu es un analyste de conversations. Analyse la conversation ci
 
 Le JSON doit contenir EXACTEMENT ces 5 champs (noms exacts, respecte la casse) :
 - "underlying_goal" (string) : l'objectif réel de l'utilisateur en une phrase
-- "outcome" (string) : OBLIGATOIREMENT l'une de ces valeurs exactes : "achieved", "mostly_achieved", "not_achieved", "unclear_from_transcript"
+- "outcome" (string) : EXACTEMENT l'une de ces 4 valeurs, rien d'autre : "achieved" | "mostly_achieved" | "not_achieved" | "unclear_from_transcript". INTERDIT : "partially achieved", "non atteint", "en cours", ou toute autre valeur.
 - "key_points" (array de strings) : 2 à 5 points clés de la conversation
 - "friction" (string) : principale difficulté rencontrée, ou "" si aucune
 - "brief_summary" (string) : résumé factuel en 1-2 phrases
 
-Utilise "unclear_from_transcript" si la session est trop courte ou sans interaction visible.
+Règle pour "outcome" : utilise "unclear_from_transcript" si la session est trop courte ou sans interaction visible. Utilise "achieved" si l'objectif est pleinement atteint, "mostly_achieved" si partiellement, "not_achieved" si échoué.
 
 <conversation>
 {messages}
