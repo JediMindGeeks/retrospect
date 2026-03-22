@@ -4,6 +4,7 @@ from pathlib import Path
 class Config:
     LLM_BACKEND: str = os.getenv("INSIGHTS_LLM", "ollama")
     OLLAMA_MODEL: str = os.getenv("INSIGHTS_MODEL", "qwen2.5-coder-16k:latest")
+    OLLAMA_REPORT_MODEL: str = os.getenv("INSIGHTS_REPORT_MODEL", "mistral-small3.2-16k:latest")
     OLLAMA_URL: str = os.getenv("OLLAMA_URL", "http://localhost:11434")
     CLAUDE_MODEL: str = "claude-haiku-4-5-20251001"
 

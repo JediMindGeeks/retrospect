@@ -2,7 +2,7 @@ import json
 from datetime import date as _date_cls
 from pathlib import Path
 from collections import Counter
-from llm import generate
+from llm import generate_narrative as generate
 
 # ─── 6 prompts d'agrégation spécialisés (inspirés du pipeline Anthropic) ──────
 

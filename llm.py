@@ -16,8 +16,20 @@ def generate(prompt: str, schema: dict = None) -> str:
     except Exception as e:
         raise LLMUnavailableError(f"LLM inaccessible ({backend}): {e}") from e
 
-def _call_ollama(prompt: str, schema: dict = None) -> str:
-    model = os.getenv("INSIGHTS_MODEL", Config.OLLAMA_MODEL)
+def generate_narrative(prompt: str) -> str:
+    """Génère du texte libre (rapport narratif) avec le modèle dédié au rapport."""
+    backend = os.getenv("INSIGHTS_LLM", Config.LLM_BACKEND)
+    try:
+        if backend == "claude":
+            return _call_claude(prompt)
+        return _call_ollama(prompt, model=Config.OLLAMA_REPORT_MODEL)
+    except LLMUnavailableError:
+        raise
+    except Exception as e:
+        raise LLMUnavailableError(f"LLM inaccessible ({backend}): {e}") from e
+
+def _call_ollama(prompt: str, schema: dict = None, model: str = None) -> str:
+    model = model or os.getenv("INSIGHTS_MODEL", Config.OLLAMA_MODEL)
     try:
         body = {"model": model, "prompt": prompt, "stream": False}
         if schema is not None:
