@@ -5,30 +5,61 @@ from llm import generate
 
 REQUIRED_FIELDS = {"underlying_goal", "outcome", "brief_summary"}
 VALID_OUTCOMES = {"achieved", "mostly_achieved", "not_achieved", "unclear_from_transcript"}
+VALID_HELPFULNESS = {"helpful", "mostly_helpful", "unhelpful", "unclear"}
+VALID_SESSION_TYPES = {"deep_work", "quick_question", "ritual", "config", "debug", "unclear"}
+VALID_FRICTION_TYPES = {"wrong_approach", "tool_failure", "model_incompatibility", "environment", "misunderstanding", "none"}
+VALID_SATISFACTION = {"satisfied", "neutral", "frustrated", "unclear"}
 
-FACET_PROMPT = """Tu es un analyste de conversations. Analyse la conversation ci-dessous et retourne UNIQUEMENT un objet JSON valide, sans markdown, sans texte avant ou après.
+FACET_PROMPT = """Tu es un analyste de conversations IA. Analyse la conversation ci-dessous et retourne UNIQUEMENT un objet JSON valide, sans markdown, sans texte avant ou après.
 
-Le JSON doit contenir EXACTEMENT ces 5 champs (noms exacts, respecte la casse) :
+Le JSON doit contenir EXACTEMENT ces 10 champs (noms exacts, respecte la casse) :
+
 - "underlying_goal" (string) : l'objectif réel de l'utilisateur en une phrase
-- "outcome" (string) : EXACTEMENT l'une de ces 4 valeurs, rien d'autre : "achieved" | "mostly_achieved" | "not_achieved" | "unclear_from_transcript". INTERDIT : "partially achieved", "non atteint", "en cours", ou toute autre valeur.
+- "outcome" (string) : résultat du point de vue de l'UTILISATEUR. EXACTEMENT l'une de ces valeurs :
+  "achieved" | "mostly_achieved" | "not_achieved" | "unclear_from_transcript"
+- "claude_helpfulness" (string) : qualité de l'aide apportée par Claude, INDÉPENDAMMENT du résultat. EXACTEMENT :
+  "helpful" | "mostly_helpful" | "unhelpful" | "unclear"
+  Note : outcome et claude_helpfulness peuvent diverger (ex : objectif non atteint mais Claude a bien aidé, ou atteint malgré une aide médiocre)
+- "session_type" (string) : nature dominante de la session. EXACTEMENT :
+  "deep_work" | "quick_question" | "ritual" | "config" | "debug" | "unclear"
+- "primary_success" (boolean) : true si la tâche principale a été concrètement accomplie, false sinon
 - "key_points" (array de strings) : 2 à 5 points clés de la conversation
-- "friction" (string) : principale difficulté rencontrée, ou "" si aucune
+- "friction" (string) : description libre de la principale difficulté rencontrée, ou "" si aucune
+- "friction_type" (string) : catégorie dominante de friction. EXACTEMENT :
+  "wrong_approach" | "tool_failure" | "model_incompatibility" | "environment" | "misunderstanding" | "none"
+- "user_satisfaction" (string) : état émotionnel apparent de l'utilisateur en fin de session. EXACTEMENT :
+  "satisfied" | "neutral" | "frustrated" | "unclear"
 - "brief_summary" (string) : résumé factuel en 1-2 phrases
 
-Règle pour "outcome" : utilise "unclear_from_transcript" si la session est trop courte ou sans interaction visible. Utilise "achieved" si l'objectif est pleinement atteint, "mostly_achieved" si partiellement, "not_achieved" si échoué.
+Règles importantes :
+- "outcome" = unclear_from_transcript si la session est trop courte ou sans échange réel
+- "outcome" ≠ "claude_helpfulness" : l'un mesure le résultat, l'autre la qualité de l'aide
+- "primary_success" = false si Claude a décrit les étapes sans les exécuter, même si l'utilisateur semble satisfait
+- "friction_type" = "none" si aucune friction notable
 
 <conversation>
 {messages}
 </conversation>
 
-Réponds avec le JSON uniquement. Exemple de format attendu :
-{{"underlying_goal": "...", "outcome": "achieved", "key_points": ["..."], "friction": "", "brief_summary": "..."}}"""
+Réponds avec le JSON uniquement. Exemple :
+{{"underlying_goal": "...", "outcome": "not_achieved", "claude_helpfulness": "unhelpful", "session_type": "ritual", "primary_success": false, "key_points": ["..."], "friction": "Claude a décrit les étapes au lieu de les exécuter", "friction_type": "wrong_approach", "user_satisfaction": "frustrated", "brief_summary": "..."}}"""
 
 def is_valid_facet(facet: dict) -> bool:
     """Return True if facet contains all required fields with valid values."""
     if not REQUIRED_FIELDS.issubset(facet.keys()):
         return False
-    return facet.get("outcome") in VALID_OUTCOMES
+    if facet.get("outcome") not in VALID_OUTCOMES:
+        return False
+    # Nouveaux champs optionnels — validés si présents
+    if "claude_helpfulness" in facet and facet["claude_helpfulness"] not in VALID_HELPFULNESS:
+        return False
+    if "session_type" in facet and facet["session_type"] not in VALID_SESSION_TYPES:
+        return False
+    if "friction_type" in facet and facet["friction_type"] not in VALID_FRICTION_TYPES:
+        return False
+    if "user_satisfaction" in facet and facet["user_satisfaction"] not in VALID_SATISFACTION:
+        return False
+    return True
 
 def _cache_path(source: str, conv_id: str, base_dir: Path) -> Path:
     return Path(base_dir) / f"{source}-{conv_id}.json"

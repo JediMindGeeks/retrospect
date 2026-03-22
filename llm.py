@@ -6,13 +6,22 @@ from config import Config
 _FACET_SCHEMA = {
     "type": "object",
     "properties": {
-        "underlying_goal": {"type": "string"},
-        "outcome": {"type": "string", "enum": ["achieved", "mostly_achieved", "not_achieved", "unclear_from_transcript"]},
-        "key_points": {"type": "array", "items": {"type": "string"}},
-        "friction": {"type": "string"},
-        "brief_summary": {"type": "string"},
+        "underlying_goal":    {"type": "string"},
+        "outcome":            {"type": "string", "enum": ["achieved", "mostly_achieved", "not_achieved", "unclear_from_transcript"]},
+        "claude_helpfulness": {"type": "string", "enum": ["helpful", "mostly_helpful", "unhelpful", "unclear"]},
+        "session_type":       {"type": "string", "enum": ["deep_work", "quick_question", "ritual", "config", "debug", "unclear"]},
+        "primary_success":    {"type": "boolean"},
+        "key_points":         {"type": "array", "items": {"type": "string"}},
+        "friction":           {"type": "string"},
+        "friction_type":      {"type": "string", "enum": ["wrong_approach", "tool_failure", "model_incompatibility", "environment", "misunderstanding", "none"]},
+        "user_satisfaction":  {"type": "string", "enum": ["satisfied", "neutral", "frustrated", "unclear"]},
+        "brief_summary":      {"type": "string"},
     },
-    "required": ["underlying_goal", "outcome", "key_points", "friction", "brief_summary"],
+    "required": [
+        "underlying_goal", "outcome", "claude_helpfulness", "session_type",
+        "primary_success", "key_points", "friction", "friction_type",
+        "user_satisfaction", "brief_summary",
+    ],
 }
 
 class LLMUnavailableError(Exception):

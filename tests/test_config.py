@@ -10,7 +10,7 @@ def test_default_model_is_set():
     assert Config.OLLAMA_MODEL != ""
 
 def test_default_model():
-    assert Config.OLLAMA_MODEL == "mistral-small3.1:24b"
+    assert Config.OLLAMA_MODEL == "qwen2.5-coder-16k:latest"
 
 def test_output_dir_exists_after_init(tmp_path):
     Config.ensure_dirs(base_dir=tmp_path)
