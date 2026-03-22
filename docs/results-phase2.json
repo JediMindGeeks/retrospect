@@ -1,0 +1,350 @@
+{
+  "llama3.2-16k:latest": {
+    "01390feb": {
+      "runs": [
+        {
+          "raw_preview": "{\"underlying_goal\": \"d\\u00e9marre une session de travail\", \"outcome\": \"achieved\", \"key_points\": [\"Lire le REGISTRY\", \"Ra",
+          "elapsed": 15.1,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{\"underlying_goal\": \"d\\u00e9marre une session de travail avec les \\u00e9tapes du rituel de d\\u00e9but de session\", \"outc",
+          "elapsed": 7.9,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        }
+      ],
+      "stable": true
+    },
+    "119d6ac9": {
+      "runs": [
+        {
+          "raw_preview": "{\"underlying_goal\": \"login avec succès\", \"outcome\": \"achieved\", \"key_points\": [\"Login interrupté\", \"Login réussi\"], \"fri",
+          "elapsed": 2.6,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{\"underlying_goal\": \"obtenir des informations sur les données d\\u2019utilisation\", \"outcome\": \"achieve\", \"key_points\": [",
+          "elapsed": 3.5,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieve",
+          "outcome_match": false,
+          "missing_fields": []
+        }
+      ],
+      "stable": false
+    },
+    "762cfc61": {
+      "runs": [
+        {
+          "raw_preview": "{\"underlying_goal\": \"Démarre une session test fonctionnellement\", \"outcome\": \"unclear_from_transcript\", \"key_points\": [\"",
+          "elapsed": 4.3,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "unclear_from_transcript",
+          "outcome_match": null,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{ \"underlying_goal\": \"d\\u00e9marre une session test et tester la fonctions de l'assistant sans erreur\",  \"outcome\": \"unc",
+          "elapsed": 5.0,
+          "json_valid": false,
+          "fields_ok": false,
+          "outcome": null,
+          "outcome_match": null
+        }
+      ],
+      "stable": null
+    },
+    "e455a82a": {
+      "runs": [
+        {
+          "raw_preview": "{   \"underlying_goal\": \" tester la fonctionnalit\\u00e9 d'un assistant \",    \"outcome\" : \"unclear_from_transcript\",   \"ke",
+          "elapsed": 4.9,
+          "json_valid": false,
+          "fields_ok": false,
+          "outcome": null,
+          "outcome_match": null
+        },
+        {
+          "raw_preview": "{\"underlying_goal\": \" tester la fonctionnalit\\u00e9 d'une session d'aide \", \"outcome\": \"unclear_from_transcript\", \"key_p",
+          "elapsed": 3.3,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "unclear_from_transcript",
+          "outcome_match": null,
+          "missing_fields": []
+        }
+      ],
+      "stable": null
+    },
+    "2b0f9fd8": {
+      "runs": [
+        {
+          "raw_preview": "{\"underlying_goal\": \"Lancer l'ingestion initiale P06 pour débloquer la démo manager et la valeur RAG, valider que sa sta",
+          "elapsed": 14.3,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "mostly_achieved",
+          "outcome_match": null,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{\"underlying_goal\": \"Lancer l'ingestion initiale P06\", \"outcome\": \"mostly_achieved\", \"key_points\": [\"Lancer l'ingestion ",
+          "elapsed": 8.8,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "mostly_achieved",
+          "outcome_match": null,
+          "missing_fields": []
+        }
+      ],
+      "stable": true
+    }
+  },
+  "llama3-groq-tool-16k:latest": {
+    "01390feb": {
+      "runs": [
+        {
+          "raw_preview": "{   \"underlying_goal\": \"Début de session pour le projet [NOM PROJET] avec orientation basée sur les mémoires récentes\", ",
+          "elapsed": 35.6,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{\"underlying_goal\": \"execute debut-session command\", \"outcome\": \"achieved\", \"key_points\": [\"read REGISTRY file\", \"recall",
+          "elapsed": 6.5,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        }
+      ],
+      "stable": true
+    },
+    "119d6ac9": {
+      "runs": [
+        {
+          "raw_preview": "{   \"underlying_goal\": \"Gain insights into usage data\",   \"outcome\": \"mostly_achieved\",   \"key_points\": [\"Ran /insights ",
+          "elapsed": 8.3,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "mostly_achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{\"underlying_goal\": \"Get insights into user behavior.\", \"outcome\": \"mostly_achieved\", \"key_points\": [\"Ran /insights comm",
+          "elapsed": 9.7,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "mostly_achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        }
+      ],
+      "stable": true
+    },
+    "762cfc61": {
+      "runs": [
+        {
+          "raw_preview": "{   \"underlying_goal\": \"Démarrer une session test pour vérifier la fonctionnalité\",   \"outcome\": \"achieved\",   \"key_poin",
+          "elapsed": 7.6,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": null,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{   \"underlying_goal\": \"I want to check if the session test is functional.\",   \"outcome\": \"unclear_from_transcript\",   \"",
+          "elapsed": 8.2,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "unclear_from_transcript",
+          "outcome_match": null,
+          "missing_fields": []
+        }
+      ],
+      "stable": false
+    },
+    "e455a82a": {
+      "runs": [
+        {
+          "raw_preview": "{   \"underlying_goal\": \"To check the functionality of a session.\",   \"outcome\": \"achieved\",   \"key_points\": [\"API Error:",
+          "elapsed": 6.4,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": null,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{   \"underlying_goal\": \"démarre une session test et vérifier si le service est fonctionnel\",   \"outcome\": \"unclear_from_",
+          "elapsed": 11.7,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "unclear_from_transcript",
+          "outcome_match": null,
+          "missing_fields": []
+        }
+      ],
+      "stable": false
+    },
+    "2b0f9fd8": {
+      "runs": [
+        {
+          "raw_preview": "{   \"underlying_goal\": \"Base of knowledge IT unified - ChromaDB + couche markdown wiki + interface Gradio.\",   \"outcome\"",
+          "elapsed": 25.8,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "mostly_achieved",
+          "outcome_match": null,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{\"underlying_goal\": \"Base de connaissance IT unifiée — ChromaDB + couche markdown wiki + interface Gradio.\", \"outcome\": ",
+          "elapsed": 16.7,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": null,
+          "missing_fields": []
+        }
+      ],
+      "stable": false
+    }
+  },
+  "deepseek-r1-llama-16k:latest": {
+    "01390feb": {
+      "runs": [
+        {
+          "raw_preview": "```json {   \"underlying_goal\": \"Initier une session de travail en exécutant la commande `/debut-session`.\",   \"outcome\":",
+          "elapsed": 108.4,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "not_achieved",
+          "outcome_match": true,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "{\"underlying_goal\": \"Initier une nouvelle session en exécutant la commande `/debut-session`.\", \"outcome\": \"achieved\", \"k",
+          "elapsed": 63.0,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        }
+      ],
+      "stable": false
+    },
+    "119d6ac9": {
+      "runs": [
+        {
+          "raw_preview": "{\"underlying_goal\": \"The user attempted to log in successfully.\", \"outcome\": \"achieved\", \"key_points\": [\"/login command ",
+          "elapsed": 62.8,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "```json {   \"underlying_goal\": \"L'utilisateur souhaite accéder au rapport d'insights partagés.\",   \"outcome\": \"achieved\"",
+          "elapsed": 62.5,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": false,
+          "missing_fields": []
+        }
+      ],
+      "stable": true
+    },
+    "762cfc61": {
+      "runs": [
+        {
+          "raw_preview": "```json {   \"underlying_goal\": \"L'utilisateur souhaite tester si la session est fonctionnelle.\",   \"outcome\": \"unclear_f",
+          "elapsed": 135.2,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "unclear_from_transcript",
+          "outcome_match": null,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "```json {   \"underlying_goal\": \"démarquer une session de test pour vérifier la fonctionnalité\",   \"outcome\": \"unclear_fr",
+          "elapsed": 62.0,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "unclear_from_transcript",
+          "outcome_match": null,
+          "missing_fields": []
+        }
+      ],
+      "stable": true
+    },
+    "e455a82a": {
+      "runs": [
+        {
+          "raw_preview": "{\"underlying_goal\": \"Démarrer une session de test et vérifier si le système fonctionne correctement.\", \"outcome\": \"not_a",
+          "elapsed": 69.6,
+          "json_valid": false,
+          "fields_ok": false,
+          "outcome": null,
+          "outcome_match": null
+        },
+        {
+          "raw_preview": "{\"underlying_goal\": \"L'utilisateur souhaite tester la fonctionnalité d'une session.\", \"outcome\": \"not_achieved\", \"key_po",
+          "elapsed": 78.7,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "not_achieved",
+          "outcome_match": null,
+          "missing_fields": []
+        }
+      ],
+      "stable": null
+    },
+    "2b0f9fd8": {
+      "runs": [
+        {
+          "raw_preview": "```json {   \"underlying_goal\": \"Intégrer la base de connaissances IT unifiée via ChromaDB, une couche markdown wiki et u",
+          "elapsed": 140.9,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": null,
+          "missing_fields": []
+        },
+        {
+          "raw_preview": "```json {   \"underlying_goal\": \"Générer un rapport matinal en markdown avec les sections spécifiques : ## Infra, ## Mome",
+          "elapsed": 119.3,
+          "json_valid": true,
+          "fields_ok": true,
+          "outcome": "achieved",
+          "outcome_match": null,
+          "missing_fields": []
+        }
+      ],
+      "stable": true
+    }
+  }
+}

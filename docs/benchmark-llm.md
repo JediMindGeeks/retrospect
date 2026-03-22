@@ -81,14 +81,73 @@ Tous les modèles locaux Ollama disponibles au 2026-03-22. Exclusions :
 - Modèles cloud (`minimax-m2.7:cloud`, `kimi-k2.5:cloud`, `qwen3-coder-next:cloud`)
 - Doublons base : quand un modèle a une version `-16k` Modelfile, on teste la version 16k (contexte explicitement configuré)
 
-## Résultats Phase 1
+## Résultats Phase 1 — 2026-03-22
 
-> À remplir après exécution de `python benchmark.py --phase 1`
+18/19 modèles survivants. Seul `Llama-3-Admin` éliminé (404 — modèle corrompu).
 
-## Résultats Phase 2
+Accord Anthropic sur `01390feb` dès la Phase 1 :
 
-> À remplir après exécution de `python benchmark.py --phase 2`
+| Accord ✓ (`not_achieved`) | Désaccord ✗ |
+|---|---|
+| qwen3-14b, qwen3-8b, qwen3-vl-thinking-32k, qwen2.5-14b, qwen2.5-coder, mistral-small3.2, deepseek-r1-16k, deepseek-r1-tc | mistral-small3.1 (`unclear`), mistral-16k (`unclear`), llama3.1 (`unclear`), phi4-mini (`unclear`), granite4-3b (`unclear`), granite4-tiny (`unclear`), granite4-1b (`unclear`), llama3.2 (`achieved`), deepseek-r1-llama (`achieved`), llama3-groq (`mostly_achieved`) |
 
-## Décision finale
+Phase 2 option B appliquée : `llama3.2`, `deepseek-r1-llama`, `llama3-groq` testés séparément en fin de benchmark pour rester méthodique.
 
-> À remplir après analyse des résultats Phase 2.
+## Résultats Phase 2 — 2026-03-22
+
+Batterie : 5 sessions × 18 modèles × 2 runs. Résultats bruts : `docs/results-phase2.json`.
+
+Classement final par accord Anthropic (sessions `01390feb` et `119d6ac9`, vérité terrain) :
+
+| Modèle | Accord Anthropic | Stabilité | Vitesse moy. | JSON valide |
+|--------|-----------------|-----------|--------------|-------------|
+| `granite4:tiny-h` | **3/4** | 3/5 | 10s | 9/10 |
+| `qwen2.5-coder-16k` | 2/4 | 4/5 | 18s | 10/10 |
+| `granite4-3b-16k` | 2/4 | **5/5** | 10s | 10/10 |
+| `deepseek-r1-16k` | 2/4 | 4/5 | 83s | 10/10 |
+| `qwen2.5-14b-16k` | 2/4 | 3/5 | 34s | 9/10 |
+| `deepseek-r1-llama-16k` | 1/4 | 3/5 | 90s | 9/10 |
+| `qwen3-14b-16k` | 1/4 | 3/5 | 96s | 10/10 |
+| `qwen3-16k` | 1/4 | 3/5 | 61s | 10/10 |
+| `mistral-small3.2-16k` | 1/4 | 4/5 | 54s | 10/10 |
+| `deepseek-r1-tc-16k` | 1/4 | 3/5 | 66s | 8/10 |
+| `mistral-small3.1-24b-16k` *(baseline)* | 0/4 | 5/5 | 55s | 10/10 |
+| `qwen3-vl-thinking-32k` | 0/4 | 3/5 | 219s | 7/10 |
+| `mistral-16k` | 0/4 | 4/5 | 22s | 10/10 |
+| `llama3.1-16k` | 0/4 | 3/5 | 20s | 9/10 |
+| `phi4-mini-16k` | 0/4 | 3/5 | 12s | 8/10 |
+| `llama3-groq-tool-16k` | 0/4 | 2/5 | 14s | 10/10 |
+| `llama3.2-16k` | 0/4 | 2/5 | 7s | 8/10 |
+| `granite4:1b` | 0/4 | 1/5 | 6s | 3/10 |
+
+**Observations notables :**
+
+- `granite4:tiny-h` (4.2GB) obtient le meilleur accord (3/4) — surprise majeure. A produit une valeur hors enum (`partially_achieved`) sur une session.
+- `mistral-small3.1` (baseline actuelle) : 0/4, stable dans l'erreur (`unclear_from_transcript` systématique). À remplacer.
+- `qwen2.5-coder-16k` : modèle orienté code, excellent sur l'analyse de conversations. 18s, 4/5 stabilité, JSON parfait.
+- `119d6ac9` est la session la plus discriminante : quasi tous les modèles disent `achieved`, seul `granite4:tiny-h` trouve `not_achieved` sur les deux runs.
+- Les modèles CORTEX-benchmark (qwen3-14b, mistral, llama) performent moins bien ici qu'attendu — confirmation que les deux tâches sont indépendantes.
+
+## Décision finale — 2026-03-22
+
+**Modèle recommandé pour production : `qwen2.5-coder-16k`**
+
+Justification :
+- 2/4 accord Anthropic (vs 0/4 pour la baseline)
+- 4/5 stabilité — prévisible sur runs répétés
+- 18s/session — 54 sessions en ~16 min (vs ~90 min avec mistral-small3.1)
+- JSON valide 10/10 — aucune valeur hors enum
+- Taille 4.7GB — tient en VRAM
+
+**Alternative si précision prime sur stabilité : `granite4:tiny-h`**
+- Meilleur accord (3/4) mais instabilité JSON (valeur hors enum possible)
+- À envisager avec validation stricte de l'enum + retry automatique
+
+**Éliminé définitivement : `mistral-small3.1-24b-16k`**
+- Notre baseline actuelle, le pire résultat (0/4), remplacé immédiatement
+
+**Variable d'environnement à changer :**
+```bash
+INSIGHTS_MODEL=qwen2.5-coder-16k:latest
+# ou dans config.py : OLLAMA_MODEL = "qwen2.5-coder-16k:latest"
+```

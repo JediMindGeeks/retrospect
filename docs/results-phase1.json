@@ -1,0 +1,186 @@
+[
+  {
+    "model": "qwen3-14b-16k:latest",
+    "raw_preview": "{\"underlying_goal\": \"Démarrer une session de travail en suivant les étapes définies par le rituel /debut-session\", \"outc",
+    "elapsed": 122.9,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "not_achieved",
+    "outcome_match": true,
+    "missing_fields": []
+  },
+  {
+    "model": "qwen3-16k:latest",
+    "raw_preview": "{\"underlying_goal\": \"Démarrer une session de travail en exécutant la commande /debut-session\", \"outcome\": \"not_achieved\"",
+    "elapsed": 110.8,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "not_achieved",
+    "outcome_match": true,
+    "missing_fields": []
+  },
+  {
+    "model": "qwen3-vl-thinking-32k:latest",
+    "raw_preview": "{\"underlying_goal\": \"L'utilisateur souhaitait démarrer une session de travail via la commande /debut-session mais a quit",
+    "elapsed": 67.4,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "not_achieved",
+    "outcome_match": true,
+    "missing_fields": []
+  },
+  {
+    "model": "qwen2.5-14b-16k:latest",
+    "raw_preview": "{\"underlying_goal\": \"Commencer une nouvelle session en suivant les étapes définies pour le début de la session.\", \"outco",
+    "elapsed": 45.1,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "not_achieved",
+    "outcome_match": true,
+    "missing_fields": []
+  },
+  {
+    "model": "qwen2.5-coder-16k:latest",
+    "raw_preview": "```json {   \"underlying_goal\": \"Débuter une session et préparer les étapes nécessaires pour y être prêt\",   \"outcome\": \"",
+    "elapsed": 21.4,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "not_achieved",
+    "outcome_match": true,
+    "missing_fields": []
+  },
+  {
+    "model": "mistral-small3.1-24b-16k:latest",
+    "raw_preview": "{   \"underlying_goal\": \"L'utilisateur souhaite démarrer une session de travail.\",   \"outcome\": \"unclear_from_transcript\"",
+    "elapsed": 73.5,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "unclear_from_transcript",
+    "outcome_match": false,
+    "missing_fields": []
+  },
+  {
+    "model": "mistral-small3.2-16k:latest",
+    "raw_preview": "```json {   \"underlying_goal\": \"L'utilisateur souhaite démarrer une session de travail avec l'assistant.\",   \"outcome\": ",
+    "elapsed": 72.8,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "not_achieved",
+    "outcome_match": true,
+    "missing_fields": []
+  },
+  {
+    "model": "mistral-16k:latest",
+    "raw_preview": " {   \"underlying_goal\": \"Démarrer une session de travail avec l'assistant\",   \"outcome\": \"unclear_from_transcript\",   \"k",
+    "elapsed": 26.8,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "unclear_from_transcript",
+    "outcome_match": false,
+    "missing_fields": []
+  },
+  {
+    "model": "llama3.1-16k:latest",
+    "raw_preview": "{   \"underlying_goal\": \"comprendre les étapes à suivre pour démarrer une session de travail\",   \"outcome\": \"unclear_from",
+    "elapsed": 32.3,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "unclear_from_transcript",
+    "outcome_match": false,
+    "missing_fields": []
+  },
+  {
+    "model": "llama3.2-16k:latest",
+    "raw_preview": "{\"underlying_goal\": \"D\\u00e9marre une s\\u00e9ance de travail\", \"outcome\": \"achieved\", \"key_points\": [\"Lire le REGISTRY\",",
+    "elapsed": 8.8,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "achieved",
+    "outcome_match": false,
+    "missing_fields": []
+  },
+  {
+    "model": "llama3-groq-tool-16k:latest",
+    "raw_preview": "{   \"underlying_goal\": \"Start a session with an orientation based on recent memories and the REGISTRY.\",   \"outcome\": \"m",
+    "elapsed": 20.5,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "mostly_achieved",
+    "outcome_match": false,
+    "missing_fields": []
+  },
+  {
+    "model": "Llama-3-Admin:latest",
+    "error": "Client error '404 Not Found' for url 'http://localhost:11434/api/generate'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+  },
+  {
+    "model": "deepseek-r1-16k:latest",
+    "raw_preview": "{\"underlying_goal\": \"Tester la commande `/debut-session` pour démarrer une session de travail.\", \"outcome\": \"not_achieve",
+    "elapsed": 54.9,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "not_achieved",
+    "outcome_match": true,
+    "missing_fields": []
+  },
+  {
+    "model": "deepseek-r1-llama-16k:latest",
+    "raw_preview": "```json {   \"underlying_goal\": \"Commencer une session de travail\",   \"outcome\": \"achieved\",   \"key_points\": [     \"Lisez",
+    "elapsed": 100.7,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "achieved",
+    "outcome_match": false,
+    "missing_fields": []
+  },
+  {
+    "model": "deepseek-r1-tc-16k:latest",
+    "raw_preview": "<think> Okay, let me try to figure out how to approach this problem. So, the user provided a conversation between a user",
+    "elapsed": 103.2,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "unclear_from_transcript",
+    "outcome_match": false,
+    "missing_fields": []
+  },
+  {
+    "model": "phi4-mini-16k:latest",
+    "raw_preview": "```json {   \"underlying_goal\": \"Exécuter la commande /debut-session pour démarrer une session de travail assistée par IA",
+    "elapsed": 16.8,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "achieved",
+    "outcome_match": false,
+    "missing_fields": []
+  },
+  {
+    "model": "granite4-3b-16k:latest",
+    "raw_preview": "{   \"underlying_goal\": \"Exécuter la commande `/debut-session` pour démarrer une session de travail\",   \"outcome\": \"not_a",
+    "elapsed": 9.7,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "not_achieved",
+    "outcome_match": true,
+    "missing_fields": []
+  },
+  {
+    "model": "granite4:tiny-h",
+    "raw_preview": "{ \"underlying_goal\": \"terminer la session et résumer les points clés\", \"outcome\": \"achieved\", \"key_points\": [\"propositio",
+    "elapsed": 19.1,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "achieved",
+    "outcome_match": false,
+    "missing_fields": []
+  },
+  {
+    "model": "granite4:1b",
+    "raw_preview": "{\"underlying_goal\":\"Commence une session pour travailler sur un projet.\", \"outcome\":\"unclear_from_transcript\", \"key_poin",
+    "elapsed": 10.0,
+    "json_valid": true,
+    "fields_ok": true,
+    "outcome": "unclear_from_transcript",
+    "outcome_match": false,
+    "missing_fields": []
+  }
+]
