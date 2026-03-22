@@ -3,6 +3,28 @@ from pathlib import Path
 from config import Config
 from llm import generate
 
+# JSON schema pour Ollama structured output — force les noms de champs et les enums au niveau des tokens
+_FACET_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "underlying_goal":    {"type": "string"},
+        "outcome":            {"type": "string", "enum": ["achieved", "mostly_achieved", "not_achieved", "unclear_from_transcript"]},
+        "claude_helpfulness": {"type": "string", "enum": ["helpful", "mostly_helpful", "unhelpful", "unclear"]},
+        "session_type":       {"type": "string", "enum": ["deep_work", "quick_question", "ritual", "config", "debug", "unclear"]},
+        "primary_success":    {"type": "boolean"},
+        "key_points":         {"type": "array", "items": {"type": "string"}},
+        "friction":           {"type": "string"},
+        "friction_type":      {"type": "string", "enum": ["wrong_approach", "tool_failure", "model_incompatibility", "environment", "misunderstanding", "none"]},
+        "user_satisfaction":  {"type": "string", "enum": ["satisfied", "neutral", "frustrated", "unclear"]},
+        "brief_summary":      {"type": "string"},
+    },
+    "required": [
+        "underlying_goal", "outcome", "claude_helpfulness", "session_type",
+        "primary_success", "key_points", "friction", "friction_type",
+        "user_satisfaction", "brief_summary",
+    ],
+}
+
 REQUIRED_FIELDS = {"underlying_goal", "outcome", "brief_summary"}
 VALID_OUTCOMES = {"achieved", "mostly_achieved", "not_achieved", "unclear_from_transcript"}
 VALID_HELPFULNESS = {"helpful", "mostly_helpful", "unhelpful", "unclear"}
@@ -24,7 +46,12 @@ Le JSON doit contenir EXACTEMENT ces 10 champs (noms exacts, respecte la casse) 
   "deep_work" | "quick_question" | "ritual" | "config" | "debug" | "unclear"
 - "primary_success" (boolean) : true si la tâche principale a été concrètement accomplie, false sinon
 - "key_points" (array de strings) : 2 à 5 points clés de la conversation
-- "friction" (string) : description libre de la principale difficulté rencontrée, ou "" si aucune
+- "friction" (string) : si friction_type != "none", OBLIGATOIRE — décrire la friction en une phrase concrète.
+  Exemples : "Claude a décrit les étapes au lieu de les exécuter"
+             "Timeout Ollama — réponse incomplète ou absente"
+             "Claude a utilisé le mauvais outil (MCP au lieu de Read natif)"
+             "Modèle incompatible avec le tool calling"
+  Si friction_type = "none", mettre "".
 - "friction_type" (string) : catégorie dominante de friction. EXACTEMENT :
   "wrong_approach" | "tool_failure" | "model_incompatibility" | "environment" | "misunderstanding" | "none"
 - "user_satisfaction" (string) : état émotionnel apparent de l'utilisateur en fin de session. EXACTEMENT :
@@ -134,7 +161,7 @@ def generate_facet(conv: dict, source: str) -> dict:
     prompt = FACET_PROMPT.format(messages=_truncate(messages_text, Config.MAX_CONV_CHARS))
 
     try:
-        raw = generate(prompt)
+        raw = generate(prompt, schema=_FACET_SCHEMA)
     except Exception as exc:
         raise ValueError(f"LLM call failed: {exc}") from exc
 

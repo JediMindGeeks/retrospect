@@ -18,12 +18,14 @@ OUR_FACETS_DIR = Path.home() / "notes" / "insights" / "facets"
 # Champs communs (présents des deux côtés)
 COMMON_FIELDS = {"underlying_goal", "outcome", "brief_summary"}
 
-# Valeurs d'outcome valides chez Anthropic (ils ont "unclear_from_transcript" en plus)
+# Normalisation des outcomes : Anthropic utilise des synonymes (fully_achieved, partially_achieved)
 OUTCOME_MAP = {
-    "achieved": "achieved",
-    "mostly_achieved": "mostly_achieved",
-    "not_achieved": "not_achieved",
-    "unclear_from_transcript": "not_achieved",  # approximation
+    "achieved":                "achieved",
+    "fully_achieved":          "achieved",           # synonyme Anthropic
+    "mostly_achieved":         "mostly_achieved",
+    "partially_achieved":      "mostly_achieved",    # synonyme Anthropic
+    "not_achieved":            "not_achieved",
+    "unclear_from_transcript": "unclear_from_transcript",
 }
 
 
