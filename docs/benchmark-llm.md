@@ -174,3 +174,34 @@ Run complet sur 56 sessions (2026-03-22) après enrichissement du schéma :
 1. Normaliser l'enum Anthropic dans `compare.py` pour mesurer le vrai accord
 2. Améliorer la détection de friction dans le prompt
 3. Corriger le bug du rapport narratif (JSON brut au lieu de markdown)
+
+## Résultats post-correctifs — 2026-03-22
+
+Après application des trois correctifs (commit `ecb6c95`) et régénération complète des 56 facets :
+
+**Fix 1 — Rapport narratif ✅ résolu**
+Le rapport génère du markdown lisible (sections "Ce qui fonctionne", "Frictions récurrentes", "Suggestions").
+Plus aucun JSON brut dans la section Vue d'ensemble.
+
+**Fix 2 — Normalisation OUTCOME_MAP**
+Accord Anthropic : **18/49 (37%)** — identique au run précédent.
+Conclusion : Anthropic n'utilise pas `fully_achieved`/`partially_achieved` dans ce dataset (ils utilisent déjà `achieved`/`mostly_achieved`). Le mapping est correct et robuste pour futurs datasets, sans impact mesurable ici.
+
+**Fix 3 — Détection de friction ✅ résolu**
+Session `01390feb` (cas de référence "Claude décrit les étapes") :
+- `friction`: `"Claude a décrit les étapes au lieu de les exécuter"` ✅ non vide
+- `friction_type`: `"wrong_approach"` ✅
+
+**Distribution outcomes après régénération :**
+- not_achieved : 23 (41%)
+- unclear_from_transcript : 21 (38%)
+- achieved : 6 (11%)
+- mostly_achieved : 6 (11%)
+
+Légère correction par rapport au run précédent : le nouveau prompt friction plus précis a rebalancé quelques sessions `achieved` → `mostly_achieved`.
+
+**État final :**
+- Rapport narratif : ✅ markdown
+- Accord Anthropic : 37% (stable)
+- Friction détectée sur sessions à friction connue : ✅
+- Tests : 57/57 ✅
